@@ -1,0 +1,3 @@
+#!/bin/sh -ex
+
+mix run -e "Grexst.CLI.main" $*
