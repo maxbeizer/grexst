@@ -1,19 +1,12 @@
 # Grexst
 
-**TODO: Add description**
+A WIP port of [gripst](https://github.com/maxbeizer/gripst) to Elixir
 
-## Installation
+## Usage
+```
+export GREXST_TOKEN="access_token_from_GitHub_with_Gist_scope"
+bin/grexst "foo"
+```
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
-
-  1. Add grexst to your list of dependencies in `mix.exs`:
-
-        def deps do
-          [{:grexst, "~> 0.0.1"}]
-        end
-
-  2. Ensure grexst is started before your application:
-
-        def application do
-          [applications: [:grexst]]
-        end
+## License
+MIT; see [LICENSE](https://github.com/maxbeizer/grexst/blob/master/LICENSE)
