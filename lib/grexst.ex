@@ -3,13 +3,12 @@ defmodule Grexst do
 
   def main(output, term) do
     Client.new(%{access_token: System.get_env("GREXST_TOKEN")})
-    |> fetch
+    |> Client.get_gists
+    |> handle_gists
   end
 
-  defp fetch(client) do
-    case Client.get_gists(client) do
-      {200, body} -> Enum.each(body, fn(gist) -> IO.puts gist["id"] end)
-      _           -> IO.puts "Nope"
-    end
+  defp handle_gists({200, body}) do
+    Enum.each(body, fn(gist) -> IO.puts gist["id"] end)
   end
+  defp handle_gists(_), do: IO.puts "Nope"
 end
