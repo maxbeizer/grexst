@@ -5,20 +5,29 @@ defmodule Grexst.Client do
 
   def new(auth), do: %__MODULE__{auth: auth}
 
-  def get_gists(client, page \\ 1) do
+  def get_gists(client, page \\ 1), do: do_get_gists(client, page)
+
+  defp do_get_gists(client, page) do
     url = url(client.endpoint, page)
-    request(:get, url, client.auth)
+    {_, body} = request(:get, url, client.auth)
+
+    case body do
+      nil -> IO.puts "End of gists"
+      _   -> get_gists(client, page + 1)
+    end
   end
 
   defp process_response(response) do
     status_code = response.status_code
     body        = response.body
 
-    response = unless body == "", do: body |> JSX.decode!,
-    else: nil
+    response = case body do
+      [] -> "list"#nil
+      "" -> "string"#nil
+      _  -> ""#JSX.decode!(body)
+    end
+    IO.puts response
 
-    # if (status_code == 200), do: response,
-    # else: {status_code, response}
     {status_code, response}
   end
 
