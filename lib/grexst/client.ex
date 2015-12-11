@@ -1,4 +1,5 @@
 defmodule Grexst.Client do
+  require IEx
   use HTTPoison.Base
   defstruct auth: nil, endpoint: "https://api.github.com/gists"
   @user_agent [{"User-agent", "grexst"}]
@@ -8,8 +9,8 @@ defmodule Grexst.Client do
   def get_gists(client, page \\ 1), do: do_get_gists(client, page)
 
   defp do_get_gists(client, page) do
-    url = url(client.endpoint, page)
-    {_, body} = request(:get, url, client.auth)
+    url  = url(client.endpoint, page)
+    body = request(:get, url, client.auth)
 
     case body do
       nil -> IO.puts "End of gists"
@@ -17,18 +18,13 @@ defmodule Grexst.Client do
     end
   end
 
-  defp process_response(response) do
-    status_code = response.status_code
-    body        = response.body
+  defp process_response(%{status_code: 200} = response) do
+    {_atom, body} = JSX.decode response.body
+    length        = length(body)
 
-    response = case body do
-      [] -> "list"#nil
-      "" -> "string"#nil
-      _  -> ""#JSX.decode!(body)
-    end
-    IO.puts response
+    if length == 0, do: body = nil
 
-    {status_code, response}
+    body
   end
 
   defp url(endpoint, page), do: endpoint <> "?page=#{page}"
