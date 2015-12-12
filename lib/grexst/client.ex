@@ -9,22 +9,23 @@ defmodule Grexst.Client do
   def get_gists(client, page \\ 1), do: do_get_gists(client, page)
 
   defp do_get_gists(client, page) do
-    url  = url(client.endpoint, page)
-    body = request(:get, url, client.auth)
+    url = url(client.endpoint, page)
+    res = request(:get, url, client.auth)
 
-    if body == nil do
-      IO.puts "End of gists"
-    else
-      # get_gists(client, page + 1)
-      IO.puts body
-      {200, body}
+    case res do
+      {:end} -> IO.puts "End of gists"
+      _      -> get_gists(client, page + 1)
     end
   end
 
   defp process_response(%{status_code: 200} = response) do
     {_atom, body} = JSX.decode response.body
 
-    if length(body) == 0, do: nil, else: body
+    if length(body) == 0 do
+      {:end}
+    else
+      Grexst.APIResponseParser.parse(body)
+    end
   end
 
   defp url(endpoint, page), do: endpoint <> "?page=#{page}"
