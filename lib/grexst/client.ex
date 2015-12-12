@@ -12,19 +12,19 @@ defmodule Grexst.Client do
     url  = url(client.endpoint, page)
     body = request(:get, url, client.auth)
 
-    case body do
-      nil -> IO.puts "End of gists"
-      _   -> get_gists(client, page + 1)
+    if body == nil do
+      IO.puts "End of gists"
+    else
+      # get_gists(client, page + 1)
+      IO.puts body
+      {200, body}
     end
   end
 
   defp process_response(%{status_code: 200} = response) do
     {_atom, body} = JSX.decode response.body
-    length        = length(body)
 
-    if length == 0, do: body = nil
-
-    body
+    if length(body) == 0, do: nil, else: body
   end
 
   defp url(endpoint, page), do: endpoint <> "?page=#{page}"
