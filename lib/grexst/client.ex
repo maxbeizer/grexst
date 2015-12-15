@@ -24,7 +24,9 @@ defmodule Grexst.Client do
     if length(body) == 0 do
       {:end}
     else
-      Grexst.APIResponseParser.parse(body)
+      body
+      |> Grexst.APIResponseParser.parse
+      |> Grexst.RawURLsAgent.add_urls
     end
   end
 
