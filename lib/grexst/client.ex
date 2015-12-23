@@ -10,7 +10,7 @@ defmodule Grexst.Client do
 
   defp do_get_gists(client, page) do
     url = url(client.endpoint, page)
-    res = request(:get, url, client.auth)
+    res = request(:get, url, client.auth) |> handle_gist
 
     case res do
       {:end} -> IO.puts "End of gists"
@@ -20,14 +20,17 @@ defmodule Grexst.Client do
 
   defp process_response(%{status_code: 200} = response) do
     {_atom, body} = JSX.decode response.body
+    body
+  end
 
-    if length(body) == 0 do
-      {:end}
-    else
-      body
-      |> Grexst.APIResponseParser.parse
-      |> Grexst.RawURLsAgent.add_urls
-    end
+  defp handle_gist([]) do
+    {:end}
+  end
+
+  defp handle_gist(body) do
+    body
+    |> Grexst.APIResponseParser.parse
+    |> Grexst.RawURLsAgent.add_urls
   end
 
   defp url(endpoint, page), do: endpoint <> "?page=#{page}"
