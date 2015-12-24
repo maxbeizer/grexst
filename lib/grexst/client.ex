@@ -6,6 +6,15 @@ defmodule Grexst.Client do
 
   def new(auth), do: %__MODULE__{auth: auth}
 
+  def get_gist_content(_client, url) do
+    # body = process_response(request(:get, url))
+    handle_gist_content(request(:get, url))
+  end
+
+  defp handle_gist_content({:ok, %{status_code: 200, body: body}} = respsonse) do
+    IO.puts body
+  end
+
   def get_gists(client, page \\ 1), do: do_get_gists(client, page)
 
   defp do_get_gists(client, page) do
@@ -13,7 +22,7 @@ defmodule Grexst.Client do
     res = request(:get, url, client.auth) |> handle_gist
 
     case res do
-      {:end} -> IO.puts "End of gists"
+      {:end} -> client
       _      -> get_gists(client, page + 1)
     end
   end

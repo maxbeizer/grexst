@@ -17,11 +17,6 @@ defmodule Grexst do
     IO.puts 'starting'
     Client.new(%{access_token: System.get_env("GREXST_TOKEN")})
     |> Client.get_gists
-    |> handle_gists
+    |> Grexst.ContentHandler.get_urls
   end
-
-  defp handle_gists({200, body}) do
-    Enum.each(body, fn(gist) -> IO.puts gist["id"] end)
-  end
-  defp handle_gists(_), do: IO.puts "Nope"
 end
