@@ -2,9 +2,9 @@ defmodule Grexst do
   alias Grexst.Client
 
   def main(output, term) do
-    Client.new(%{access_token: System.get_env("GREXST_TOKEN")})
-    |> Client.get_gists
-    |> handle_gists
+    Client.start_link(auth: System.get_env("GREXST_TOKEN"))
+    # |> Client.get_gists
+    # |> handle_gists
   end
 
   defp handle_gists({200, body}) do
