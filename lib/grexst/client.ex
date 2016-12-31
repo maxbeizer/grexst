@@ -8,7 +8,7 @@ defmodule Grexst.Client do
   @user_agent [{"User-agent", "grexst"}]
 
   defmodule State do
-    defstruct access_token: nil, last_page_num: nil
+    defstruct access_token: nil, last_page_num: nil, body: nil
   end
 
   ## API
@@ -47,8 +47,8 @@ defmodule Grexst.Client do
   end
 
   def handle_call({:page, page}, _from, state) do
-    {:ok, last_page, _body} = make_request(url(@endpoint, page), authorization_header(state, []))
-    new_state = %State{state | last_page_num: last_page}
+    {:ok, last_page, body} = make_request(url(@endpoint, page), authorization_header(state, []))
+    new_state = %State{state | last_page_num: last_page, body: body}
     {:reply, new_state, new_state}
   end
 
