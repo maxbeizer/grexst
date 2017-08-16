@@ -70,7 +70,7 @@ defmodule Grexst.Client do
   defp url(endpoint, page) when is_integer(page), do: endpoint <> Integer.to_string(page)
 
   defp make_request(url, headers) do
-    request!(:get, url, "", headers, []) |> process_response
+    request!(:get, url, "", headers ++ @user_agent, []) |> process_response
   end
 
   defp authorization_header(%{access_token: token}, headers) do
