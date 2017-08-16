@@ -1,14 +1,15 @@
 defmodule Grexst.Client do
   use GenServer
   use HTTPoison.Base
-  require IEx
+
+  alias Grexst.Utils
 
   @name GC
   @endpoint "https://api.github.com/gists?page="
   @user_agent [{"User-agent", "grexst"}]
 
   defmodule State do
-    defstruct access_token: nil, last_page_num: nil, body: nil
+    defstruct access_token: nil, last_page_num: nil, raw_gist_urls: []
   end
 
   ## API
@@ -48,7 +49,12 @@ defmodule Grexst.Client do
 
   def handle_call({:page, page}, _from, state) do
     {:ok, last_page, body} = make_request(url(@endpoint, page), authorization_header(state, []))
-    new_state = %State{state | last_page_num: last_page, body: body}
+    {:ok, parsed_body} = JSX.decode(body)
+    urls_from_gists = parsed_body |> Utils.extract_gist_urls()
+    new_state = %State{state |
+      last_page_num: last_page,
+      raw_gist_urls: urls_from_gists ++ state.raw_gist_urls
+    }
     {:reply, new_state, new_state}
   end
 

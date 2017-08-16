@@ -2,10 +2,14 @@ defmodule Grexst do
   alias Grexst.Client
 
   def main(output, term) do
-    Client.start_link
-    Enum.map(1 .. Client.total_pages_of_gists, fn n ->
-      %{body: b} = Client.get_gists(n)
-      {:ok, body} = JSX.decode(b)
-      IO.inspect(body)
+    %{raw_gist_urls: raw_gist_urls} = get_gist_urls()
+  end
+
+  defp get_gist_urls() do
+    Client.start_link()
+    Enum.each(1 .. Client.total_pages_of_gists(), fn n ->
+      Client.get_gists(n)
     end)
+    Client.state()
+  end
 end
