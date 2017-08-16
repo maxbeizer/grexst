@@ -7,7 +7,7 @@ defmodule Grexst.Mixfile do
      elixir: "~> 1.1",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps]
+     deps: deps()]
   end
 
   # Configuration for the OTP application
@@ -27,7 +27,7 @@ defmodule Grexst.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{ :httpoison, "~> 0.7.3" },
+    [{ :httpoison, "~> 0.13.0" },
      { :exjsx,     "~> 3.0" }]
   end
 end
