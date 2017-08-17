@@ -12,5 +12,5 @@ defmodule Grexst.Cloner do
     end
   end
 
-  def tmp_dir(id), do: System.tmp_dir() <> "/#{id}"
+  def tmp_dir(id), do: System.tmp_dir() <> "#{id}"
 end

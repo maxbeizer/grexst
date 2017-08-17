@@ -1,8 +1,9 @@
 defmodule Grexst do
-  alias Grexst.Client
+  alias Grexst.{Client, Cloner}
 
   def main(output, term) do
     %{gists_info: gists_info} = get_gists_info()
+    paths = gists_info |> Enum.map(&Cloner.clone/1)
   end
 
   defp get_gists_info() do
