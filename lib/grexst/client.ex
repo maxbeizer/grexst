@@ -4,17 +4,17 @@ defmodule Grexst.Client do
 
   alias Grexst.Utils
 
-  @name GC
+  @name :grexst_client
   @endpoint "https://api.github.com/gists?page="
   @user_agent [{"User-agent", "grexst"}]
 
   defmodule State do
-    defstruct access_token: nil, last_page_num: nil, raw_gist_urls: []
+    defstruct access_token: nil, last_page_num: nil, gists_info: []
   end
 
   ## API
   def start_link(access_token \\ nil) do
-    GenServer.start_link(__MODULE__, access_token, name: GC)
+    GenServer.start_link(__MODULE__, access_token, name: @name)
   end
 
   def get_gists(page \\ 1) do
@@ -50,10 +50,10 @@ defmodule Grexst.Client do
   def handle_call({:page, page}, _from, state) do
     {:ok, last_page, body} = make_request(url(@endpoint, page), authorization_header(state, []))
     {:ok, parsed_body} = JSX.decode(body)
-    urls_from_gists = parsed_body |> Utils.extract_gist_urls()
+    gists_info = parsed_body |> Utils.extract_gist_info()
     new_state = %State{state |
       last_page_num: last_page,
-      raw_gist_urls: urls_from_gists ++ state.raw_gist_urls
+      gists_info: gists_info ++ state.gists_info
     }
     {:reply, new_state, new_state}
   end

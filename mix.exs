@@ -27,7 +27,10 @@ defmodule Grexst.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{ :httpoison, "~> 0.13.0" },
-     { :exjsx,     "~> 3.0" }]
+    [
+      {:httpoison, "~> 0.13.0"},
+      {:exjsx, "~> 3.0"},
+      {:git_cli, "~> 0.2"  }
+    ]
   end
 end
